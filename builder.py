@@ -18,6 +18,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 import yaml
 from bs4 import BeautifulSoup, NavigableString, Tag
+from cover import create_kdp_cover
 
 USER_AGENT = 'Satsukidou-KDP-Builder/0.1 (+personal archival use)'
 SELECTORS = ['.entry-content', '.post-content', '.single-content', 'article .content', 'article']
@@ -357,12 +358,17 @@ def build(config, base):
             path=export_dir/name
             if path.is_file():
                 bundle.write(path,arcname=path.name)
+    cover_image=config.get('cover_image')
+    if cover_image:
+        create_kdp_cover(export_dir/cover_image,config['title'],config.get('author',''),
+                         root/'cover.jpg')
     warnings=[w for entry in report for w in entry['warnings']]
     for entry in report:
         for name,check in entry['checks'].items():
             if check['status'] == 'FAIL':
                 warnings.append(f'{entry["title"]}: {name} validation failed')
-    print(f'Output: {export_dir} | Archive: {archive} | chapters={len(report)} | images={image_offset} | warnings={len(warnings)}')
+    cover_output=f' | Cover: {root/"cover.jpg"}' if cover_image else ''
+    print(f'Output: {export_dir} | Archive: {archive}{cover_output} | chapters={len(report)} | images={image_offset} | warnings={len(warnings)}')
     if warnings:
         for w in warnings: print('WARNING:',w,file=sys.stderr)
         return 2

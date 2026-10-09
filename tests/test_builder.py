@@ -1,11 +1,13 @@
 import io
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
 from contextlib import redirect_stdout
 from unittest.mock import Mock, patch
 from zipfile import ZipFile
+from PIL import Image
 from builder import (build, convert_article, image_url, select_article,
                      flatten_blocks, validate_chapter)
 from bs4 import BeautifulSoup
@@ -64,29 +66,41 @@ class BuilderTests(unittest.TestCase):
    self.assertTrue(any('画像ファイルがありません' in issue for issue in checks['images']['issues']))
 
  def test_build_writes_check_report(self):
+  image_buffer=io.BytesIO()
+  Image.new('RGB',(64,36),(35,105,150)).save(image_buffer,format='PNG')
+  image_data=image_buffer.getvalue()
   def fake_fetch(session,url,timeout=30):
-   return HTML.encode() if url=='https://example.org/post/' else b'\x89PNG\r\n\x1a\nfakeimage'
-  config={'slug':'test-book','title':'Test','chapters':[{'title':'第一話','url':'https://example.org/post/'}]}
-  with tempfile.TemporaryDirectory() as tmp, patch('builder.fetch',side_effect=fake_fetch):
+   return HTML.encode() if url=='https://example.org/post/' else image_data
+  config={'slug':'test-book','title':'がでがる ZERO 〜最初の一滴〜','author':'紗月堂',
+          'cover_image':'image_002.png',
+          'chapters':[{'title':'第一話','url':'https://example.org/post/'}]}
+  tmp=Path(tempfile.mkdtemp())
+  self.addCleanup(shutil.rmtree,tmp)
+  with patch('builder.fetch',side_effect=fake_fetch):
    with redirect_stdout(io.StringIO()):
-    result=build(config,Path(tmp))
-   root=Path(tmp)/'output'/'test-book'
-   export=root/'den-den'
-   verification=root/'verification'
-   report=(verification/'check_report.md').read_text(encoding='utf-8')
-   details=json.loads((verification/'report.json').read_text(encoding='utf-8'))
-   self.assertEqual(result,0)
-   self.assertIn('本文: PASS',report)
-   self.assertIn('画像順序・挿入位置: PASS',report)
-   self.assertEqual(details[0]['checks']['text']['status'],'PASS')
-   markdown=(export/'manuscript.md').read_text(encoding='utf-8')
-   self.assertIn('](image_001.png)',markdown)
-   self.assertIn('](image_002.png)',markdown)
-   self.assertLess(markdown.index('image_001.png'),markdown.index('紗月は'))
-   self.assertLess(markdown.index('紗月は'),markdown.index('image_002.png'))
-   with ZipFile(root/'den-den.zip') as bundle:
-    self.assertEqual(sorted(bundle.namelist()),['image_001.png','image_002.png','manuscript.md'])
-    self.assertTrue(all('/' not in name for name in bundle.namelist()))
-   self.assertTrue((verification/'chapter_01'/'source_page.html').is_file())
-   self.assertTrue((verification/'chapter_01'/'source_article.html').is_file())
+    result=build(config,tmp)
+  root=tmp/'output'/'test-book'
+  export=root/'den-den'
+  verification=root/'verification'
+  report=(verification/'check_report.md').read_text(encoding='utf-8')
+  details=json.loads((verification/'report.json').read_text(encoding='utf-8'))
+  self.assertEqual(result,0)
+  self.assertIn('本文: PASS',report)
+  self.assertIn('画像順序・挿入位置: PASS',report)
+  self.assertEqual(details[0]['checks']['text']['status'],'PASS')
+  markdown=(export/'manuscript.md').read_text(encoding='utf-8')
+  self.assertIn('](image_001.png)',markdown)
+  self.assertIn('](image_002.png)',markdown)
+  self.assertLess(markdown.index('image_001.png'),markdown.index('紗月は'))
+  self.assertLess(markdown.index('紗月は'),markdown.index('image_002.png'))
+  with ZipFile(root/'den-den.zip') as bundle:
+   self.assertEqual(sorted(bundle.namelist()),['image_001.png','image_002.png','manuscript.md'])
+   self.assertTrue(all('/' not in name for name in bundle.namelist()))
+  self.assertTrue((verification/'chapter_01'/'source_page.html').is_file())
+  self.assertTrue((verification/'chapter_01'/'source_article.html').is_file())
+  with Image.open(root/'cover.jpg') as cover:
+   self.assertEqual(cover.format,'JPEG')
+   self.assertEqual(cover.size,(1600,2560))
+   self.assertEqual(cover.mode,'RGB')
+  self.assertLess((root/'cover.jpg').stat().st_size,50*1024*1024)
 if __name__=='__main__': unittest.main()
