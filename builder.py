@@ -9,7 +9,6 @@ import argparse
 import hashlib
 import json
 import re
-import shutil
 import sys
 import tempfile
 import zipfile
@@ -19,7 +18,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 import yaml
 from bs4 import BeautifulSoup, NavigableString, Tag
-from cover import create_kdp_cover, generate_cover_package
+from cover import prepare_user_cover
 
 USER_AGENT = 'Satsukidou-KDP-Builder/0.1 (+personal archival use)'
 SELECTORS = ['.entry-content', '.post-content', '.single-content', 'article .content', 'article']
@@ -363,24 +362,53 @@ def build(config, base):
             path=export_dir/name
             if path.is_file():
                 bundle.write(path,arcname=path.name)
-    cover_config=config.get('cover')
-    if cover_config is not None:
-        if cover_config.get('enabled',True):
-            cover_package=generate_cover_package(config,report,export_dir,root/'cover')
-            if cover_package['drafts']:
-                shutil.copyfile(cover_package['drafts'][0],root/'cover.jpg')
-    elif config.get('cover_image'):
-        cover_image=config['cover_image']
-        create_kdp_cover(export_dir/cover_image,config['title'],config.get('author',''),
-                         root/'cover.jpg')
+    cover_config=config.get('cover',{})
+    cover_output=''
+    if cover_config.get('enabled',False):
+        input_dir_value=cover_config.get('input_dir')
+        input_dir=Path(input_dir_value) if input_dir_value else None
+        if input_dir is not None and not input_dir.is_absolute():
+            input_dir=base/input_dir
+        if input_dir is not None:
+            input_dir.mkdir(parents=True,exist_ok=True)
+        input_filename=cover_config.get('input_filename')
+        supported_extensions={'.jpg','.jpeg','.png','.webp','.tif','.tiff','.bmp'}
+        source_image=None
+        if input_dir is not None and input_dir.is_dir():
+            if input_filename:
+                if Path(input_filename).name == input_filename:
+                    candidate=input_dir/input_filename
+                    if candidate.is_file():
+                        source_image=candidate
+            else:
+                candidates=sorted(path for path in input_dir.iterdir()
+                                  if path.is_file() and path.suffix.lower() in supported_extensions)
+                if len(candidates) == 1:
+                    source_image=candidates[0]
+                elif len(candidates) > 1:
+                    print(f'Cover skipped: multiple images in {input_dir}; set cover.input_filename.')
+        if source_image is None:
+            print(f'Cover skipped: no input image found in {input_dir or "(not configured)"}.')
+        else:
+            cover_dir=root/'cover'
+            final_name=cover_config.get('output_final_name','cover_final.jpg')
+            preview_name=cover_config.get('preview_name','cover_preview.jpg')
+            for name in (final_name,preview_name):
+                if Path(name).name != name or Path(name).suffix.lower() not in ('.jpg','.jpeg'):
+                    raise ValueError('Cover output names must be JPG filenames.')
+            details=prepare_user_cover(
+                source_image,cover_dir/final_name,cover_dir/preview_name,
+                width=int(cover_config.get('width',1600)),
+                height=int(cover_config.get('height',2560)),
+                fit_mode=cover_config.get('fit_mode','contain'),
+                max_bytes=int(cover_config.get('max_bytes',50*1024*1024)),
+                preview_width=int(cover_config.get('preview_width',800)))
+            cover_output=f' | Cover: {cover_dir/final_name} ({details["width"]}x{details["height"]}, {details["bytes"]} bytes)'
     warnings=[w for entry in report for w in entry['warnings']]
     for entry in report:
         for name,check in entry['checks'].items():
             if check['status'] == 'FAIL':
                 warnings.append(f'{entry["title"]}: {name} validation failed')
-    cover_output=f' | Cover: {root/"cover"}' if cover_config and cover_config.get('enabled',True) else ''
-    if cover_config is None and config.get('cover_image'):
-        cover_output=f' | Cover: {root/"cover.jpg"}'
     print(f'Output: {export_dir} | Archive: {archive}{cover_output} | chapters={len(report)} | images={image_offset} | warnings={len(warnings)}')
     if warnings:
         for w in warnings: print('WARNING:',w,file=sys.stderr)

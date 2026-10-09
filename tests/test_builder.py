@@ -10,7 +10,7 @@ from zipfile import ZipFile
 from PIL import Image
 from cover import (build_cover_metadata, build_cover_prompt,
                    create_kdp_cover, generate_cover_package,
-                   select_cover_candidates)
+                   prepare_user_cover, select_cover_candidates)
 from builder import (build, convert_article, image_url, select_article,
                      flatten_blocks, validate_chapter)
 from bs4 import BeautifulSoup
@@ -141,6 +141,33 @@ class BuilderTests(unittest.TestCase):
     red,green,blue=cover.convert('RGB').getpixel((800,944))
     self.assertGreater(red,blue)
 
+ def test_user_cover_preserves_source_and_creates_full_preview(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp)
+   source=root/'source.png'
+   original=Image.new('RGB',(1200,800),(120,40,80))
+   original.save(source)
+   original_bytes=source.read_bytes()
+   final=root/'cover_final.jpg'
+   preview=root/'cover_preview.jpg'
+   result=prepare_user_cover(source,final,preview)
+   self.assertEqual(source.read_bytes(),original_bytes)
+   self.assertEqual(result['content_size'],(1200,800))
+   self.assertLessEqual(result['bytes'],50*1024*1024)
+   with Image.open(final) as image:
+    self.assertEqual(image.format,'JPEG')
+    self.assertEqual(image.mode,'RGB')
+    self.assertEqual(image.size,(1600,2560))
+   with Image.open(preview) as image:
+    self.assertEqual(image.size,(800,1280))
+   cropped=prepare_user_cover(source,root/'cropped.jpg',root/'cropped_preview.jpg',
+                              fit_mode='cover')
+   self.assertEqual(cropped['content_size'],(1600,2560))
+
+   with self.assertRaises(ValueError):
+    prepare_user_cover(source,root/'oversize.jpg',root/'oversize_preview.jpg',
+                       max_bytes=1)
+
  def test_build_cover_can_be_disabled(self):
   image_buffer=io.BytesIO()
   Image.new('RGB',(64,36),(35,105,150)).save(image_buffer,format='PNG')
@@ -157,6 +184,21 @@ class BuilderTests(unittest.TestCase):
    self.assertFalse((output/'cover').exists())
    self.assertFalse((output/'cover.jpg').exists())
 
+ def test_missing_cover_input_does_not_stop_book_build(self):
+  def fake_fetch(session,url,timeout=30):
+   return HTML.encode() if url=='https://example.org/post/' else b'not-used'
+  config={'slug':'missing-cover-book','title':'Test',
+          'cover':{'enabled':True,'input_dir':'books/missing-cover/cover'},
+          'chapters':[{'title':'第一話','url':'https://example.org/post/'}]}
+  with tempfile.TemporaryDirectory() as tmp, patch('builder.fetch',side_effect=fake_fetch):
+   with redirect_stdout(io.StringIO()):
+    result=build(config,Path(tmp))
+   root=Path(tmp)/'output'/'missing-cover-book'
+   self.assertEqual(result,0)
+   self.assertTrue((Path(tmp)/'books/missing-cover/cover').is_dir())
+   self.assertTrue((root/'den-den'/'manuscript.md').is_file())
+   self.assertFalse((root/'cover'/'cover_final.jpg').exists())
+
  def test_build_writes_check_report(self):
   image_buffer=io.BytesIO()
   Image.new('RGB',(64,36),(35,105,150)).save(image_buffer,format='PNG')
@@ -164,10 +206,14 @@ class BuilderTests(unittest.TestCase):
   def fake_fetch(session,url,timeout=30):
    return HTML.encode() if url=='https://example.org/post/' else image_data
   config={'slug':'test-book','title':'がでがる ZERO 〜最初の一滴〜','author':'紗月堂',
-          'cover_image':'image_002.png',
+          'cover':{'enabled':True,'input_dir':'books/test-book/cover'},
           'chapters':[{'title':'第一話','url':'https://example.org/post/'}]}
   tmp=Path(tempfile.mkdtemp())
   self.addCleanup(shutil.rmtree,tmp)
+  source_dir=tmp/'books'/'test-book'/'cover'
+  source_dir.mkdir(parents=True)
+  source_image=source_dir/'source.png'
+  source_image.write_bytes(image_data)
   with patch('builder.fetch',side_effect=fake_fetch):
    with redirect_stdout(io.StringIO()):
     result=build(config,tmp)
@@ -190,9 +236,13 @@ class BuilderTests(unittest.TestCase):
    self.assertTrue(all('/' not in name for name in bundle.namelist()))
   self.assertTrue((verification/'chapter_01'/'source_page.html').is_file())
   self.assertTrue((verification/'chapter_01'/'source_article.html').is_file())
-  with Image.open(root/'cover.jpg') as cover:
+  self.assertEqual(source_image.read_bytes(),image_data)
+  with Image.open(root/'cover'/'cover_final.jpg') as cover:
    self.assertEqual(cover.format,'JPEG')
    self.assertEqual(cover.size,(1600,2560))
    self.assertEqual(cover.mode,'RGB')
-  self.assertLess((root/'cover.jpg').stat().st_size,50*1024*1024)
+  with Image.open(root/'cover'/'cover_preview.jpg') as preview:
+   self.assertEqual(preview.size,(800,1280))
+  self.assertLess((root/'cover'/'cover_final.jpg').stat().st_size,50*1024*1024)
+  self.assertFalse((root/'cover'/'cover_draft_01.jpg').exists())
 if __name__=='__main__': unittest.main()

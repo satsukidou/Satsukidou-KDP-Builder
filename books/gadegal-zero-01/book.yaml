@@ -3,28 +3,15 @@ author: "紗月堂"
 slug: "gadegal-zero-01"
 cover:
   enabled: true
-  draft_count: 3
-  use_web_images: true
-  include_title_text: true
-  format: "jpg"
+  input_dir: "books/gadegal-zero-01/cover"
+  input_filename: null
+  fit_mode: "contain"
   width: 1600
   height: 2560
-  concept: "episode1_and_2_combined"
-  title: "がでがる ZERO"
-  subtitle: "最初の一滴"
-  summary: "オフィスで働く紗月の日常は、巨大宇宙船の出現で一変する。紗月、ルナ、ティルスの三人は青白い光に包まれ、未知の船内へ導かれる。"
-  characters:
-    - "紗月"
-    - "ルナ"
-    - "ティルス"
-  motifs:
-    - "コーヒー"
-    - "オフィス"
-    - "巨大宇宙船"
-    - "青白い光"
-    - "三人の連帯"
+  preview_width: 800
+  max_bytes: 52428800
   output_final_name: "cover_final.jpg"
-  selected_cover: null
+  preview_name: "cover_preview.jpg"
 chapters:
   - title: "第一話「空が消えた日」"
     url: "https://satsukidou.com/world/zero-1/"
