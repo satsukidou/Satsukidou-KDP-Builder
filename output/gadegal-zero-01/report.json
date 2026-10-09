@@ -1,0 +1,59 @@
+[
+  {
+    "url": "https://satsukidou.com/world/zero-1/",
+    "source_html_sha256": "57f108fe27dcaeab30c3e1d258587cd2c31ebf87e53759ac6d48e3af1a528178",
+    "source_block_count": 107,
+    "markdown_block_count": 107,
+    "image_count": 2,
+    "images": [
+      {
+        "ordinal": 1,
+        "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/da0a6d5f-ba46-4912-b398-68c589ba6a12-683x1024.png",
+        "alt": "",
+        "path": "images/image_001_5f3ccb58e0.png",
+        "sha256": "5f3ccb58e01995573dc36982b8d16d4a67e913cd6724dc5960b69154ec5d9353"
+      },
+      {
+        "ordinal": 2,
+        "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/edce7d2d-0eb5-4a00-b276-d0a03ca68f63-1024x683.png",
+        "alt": "",
+        "path": "images/image_002_c48df796d7.png",
+        "sha256": "c48df796d76c7c152d970d3418b257ac1d77a3f59613be3ea247d7387e386eba"
+      }
+    ],
+    "warnings": [],
+    "title": "第一話「空が消えた日」"
+  },
+  {
+    "url": "https://satsukidou.com/world/zero-02/",
+    "source_html_sha256": "152467a6bd9c0b86a83d4606cad67b2344fe30aa6776e3b67929a22aa2bfcfd0",
+    "source_block_count": 160,
+    "markdown_block_count": 160,
+    "image_count": 3,
+    "images": [
+      {
+        "ordinal": 1,
+        "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/月夜の研究室と巨大UFO-1024x768.png",
+        "alt": "",
+        "path": "images/image_001_f24868bb4c.png",
+        "sha256": "f24868bb4c9c50ecec89f3b52d5f27577bd4bd9457f7fed6cf1fa2fa07a47494"
+      },
+      {
+        "ordinal": 2,
+        "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/異星母艦の光に舞う三人-1024x576.png",
+        "alt": "",
+        "path": "images/image_002_abfdc393b6.png",
+        "sha256": "abfdc393b69210ed07c0aac7b3f2103551f9be985beaf96989958610f4bf9238"
+      },
+      {
+        "ordinal": 3,
+        "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/宇宙船内の光輪と三人の少女-1024x576.png",
+        "alt": "",
+        "path": "images/image_003_b6cdea7db1.png",
+        "sha256": "b6cdea7db12ec1c938ec76ff9172bda3fbd9c8f5bef58fcbf89f341bd983e52f"
+      }
+    ],
+    "warnings": [],
+    "title": "第二話「光の向こうへ」"
+  }
+]
