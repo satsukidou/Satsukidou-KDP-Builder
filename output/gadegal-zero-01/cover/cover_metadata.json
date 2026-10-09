@@ -1,0 +1,83 @@
+{
+  "title": "がでがる ZERO",
+  "subtitle": "最初の一滴",
+  "author": "紗月堂",
+  "episodes": [
+    {
+      "title": "第一話「空が消えた日」",
+      "url": "https://satsukidou.com/world/zero-1/"
+    },
+    {
+      "title": "第二話「光の向こうへ」",
+      "url": "https://satsukidou.com/world/zero-02/"
+    }
+  ],
+  "summary": "オフィスで働く紗月の日常は、巨大宇宙船の出現で一変する。紗月、ルナ、ティルスの三人は青白い光に包まれ、未知の船内へ導かれる。",
+  "characters": [
+    "紗月",
+    "ルナ",
+    "ティルス"
+  ],
+  "motifs": [
+    "コーヒー",
+    "オフィス",
+    "巨大宇宙船",
+    "青白い光",
+    "三人の連帯"
+  ],
+  "concept": "episode1_and_2_combined",
+  "cover_specs": {
+    "format": "jpg",
+    "width": 1600,
+    "height": 2560,
+    "include_title_text": true
+  },
+  "candidates": [
+    {
+      "chapter_title": "第二話「光の向こうへ」",
+      "image_path": "image_004.png",
+      "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/異星母艦の光に舞う三人-1024x576.png",
+      "alt": "",
+      "context": "「紗月！ ルナ！」 三人の身体が、ゆっくりと宙に浮かんでいく。 デスクの上の書類が舞い上がる。 ペンが回転し、タブレットが宙を漂う。",
+      "width": 1024,
+      "height": 576,
+      "score": 14,
+      "reasons": [
+        "三人のチーム要素",
+        "巨大宇宙船",
+        "青白い光",
+        "第一話の日常"
+      ]
+    },
+    {
+      "chapter_title": "第二話「光の向こうへ」",
+      "image_path": "image_005.png",
+      "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/宇宙船内の光輪と三人の少女-1024x576.png",
+      "alt": "",
+      "context": "三人の姿が、オフィスから消えていた。 そして、巨大宇宙船の内部。 誰もいないように見える白い部屋で、三つの小さな光が順番に点灯した。 まだ、三人は知らない。",
+      "width": 1024,
+      "height": 576,
+      "score": 14,
+      "reasons": [
+        "三人のチーム要素",
+        "巨大宇宙船",
+        "青白い光",
+        "第一話の日常"
+      ]
+    },
+    {
+      "chapter_title": "第二話「光の向こうへ」",
+      "image_path": "image_003.png",
+      "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/月夜の研究室と巨大UFO-1024x768.png",
+      "alt": "",
+      "context": "ルナはデスクに装置を置き、素早く操作を始めた。 画面に複雑なグラフが現れる。 「これ、さっきから観測してるんだけど……」 「何かわかった？」",
+      "width": 1024,
+      "height": 768,
+      "score": 7,
+      "reasons": [
+        "巨大宇宙船",
+        "第一話の日常"
+      ]
+    }
+  ]
+}

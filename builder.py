@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 import sys
 import tempfile
 import zipfile
@@ -18,7 +19,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 import yaml
 from bs4 import BeautifulSoup, NavigableString, Tag
-from cover import create_kdp_cover
+from cover import create_kdp_cover, generate_cover_package
 
 USER_AGENT = 'Satsukidou-KDP-Builder/0.1 (+personal archival use)'
 SELECTORS = ['.entry-content', '.post-content', '.single-content', 'article .content', 'article']
@@ -276,7 +277,7 @@ def convert_article(html, url, out_dir, session, download_images=True,
     result = []
     images = []
     issues = []
-    for block in blocks:
+    for block_index, block in enumerate(blocks):
         kind = block[0]
         if kind == 'heading':
             result.append('#' * block[1] + ' ' + block[2])
@@ -293,6 +294,10 @@ def convert_article(html, url, out_dir, session, download_images=True,
                 issues.append('Image without downloadable URL')
                 continue
             item = {'ordinal':len(images)+1,'source_url':src,'alt':img.get('alt','')}
+            nearby = blocks[max(0,block_index-2):block_index] + blocks[block_index+1:block_index+3]
+            context = ' '.join(value[2] if value[0] == 'heading' else value[1]
+                               for value in nearby if value[0] in ('heading','paragraph','list'))
+            item['context']=normalize_text(context)[:240]
             if download_images:
                 try:
                     data=fetch(session,src)
@@ -358,8 +363,14 @@ def build(config, base):
             path=export_dir/name
             if path.is_file():
                 bundle.write(path,arcname=path.name)
-    cover_image=config.get('cover_image')
-    if cover_image:
+    cover_config=config.get('cover')
+    if cover_config is not None:
+        if cover_config.get('enabled',True):
+            cover_package=generate_cover_package(config,report,export_dir,root/'cover')
+            if cover_package['drafts']:
+                shutil.copyfile(cover_package['drafts'][0],root/'cover.jpg')
+    elif config.get('cover_image'):
+        cover_image=config['cover_image']
         create_kdp_cover(export_dir/cover_image,config['title'],config.get('author',''),
                          root/'cover.jpg')
     warnings=[w for entry in report for w in entry['warnings']]
@@ -367,7 +378,9 @@ def build(config, base):
         for name,check in entry['checks'].items():
             if check['status'] == 'FAIL':
                 warnings.append(f'{entry["title"]}: {name} validation failed')
-    cover_output=f' | Cover: {root/"cover.jpg"}' if cover_image else ''
+    cover_output=f' | Cover: {root/"cover"}' if cover_config and cover_config.get('enabled',True) else ''
+    if cover_config is None and config.get('cover_image'):
+        cover_output=f' | Cover: {root/"cover.jpg"}'
     print(f'Output: {export_dir} | Archive: {archive}{cover_output} | chapters={len(report)} | images={image_offset} | warnings={len(warnings)}')
     if warnings:
         for w in warnings: print('WARNING:',w,file=sys.stderr)

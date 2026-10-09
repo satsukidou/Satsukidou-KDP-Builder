@@ -10,6 +10,7 @@
         "ordinal": 1,
         "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/da0a6d5f-ba46-4912-b398-68c589ba6a12-683x1024.png",
         "alt": "",
+        "context": "「コーヒー、いかがですか？」 紗月は、淹れたてのコーヒーをデスクに置いた。 窓から差し込む午後の日差しが、白いカップを明るく照らしている。 いつものオフィス。いつもの午後。",
         "path": "image_001.png",
         "sha256": "5f3ccb58e01995573dc36982b8d16d4a67e913cd6724dc5960b69154ec5d9353"
       },
@@ -17,6 +18,7 @@
         "ordinal": 2,
         "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/edce7d2d-0eb5-4a00-b276-d0a03ca68f63-1024x683.png",
         "alt": "",
+        "context": "いや、広がっているのではない。 あまりにも巨大なものが、こちらへ近づいているのだ。 円盤。 そう呼ぶしかない形だった。",
         "path": "image_002.png",
         "sha256": "c48df796d76c7c152d970d3418b257ac1d77a3f59613be3ea247d7387e386eba"
       }
@@ -53,7 +55,7 @@
   },
   {
     "url": "https://satsukidou.com/world/zero-02/",
-    "source_html_sha256": "cc8dcd38b7e4e2b62ffba0d22e6e7336860564ea294f9543609cc034f60181b5",
+    "source_html_sha256": "cae65eb7ef980855f555b3a71ddf5dc2765edf15405521e25ac95b80e0ce593f",
     "source_block_count": 160,
     "markdown_block_count": 160,
     "image_count": 3,
@@ -62,6 +64,7 @@
         "ordinal": 1,
         "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/月夜の研究室と巨大UFO-1024x768.png",
         "alt": "",
+        "context": "ルナはデスクに装置を置き、素早く操作を始めた。 画面に複雑なグラフが現れる。 「これ、さっきから観測してるんだけど……」 「何かわかった？」",
         "path": "image_003.png",
         "sha256": "f24868bb4c9c50ecec89f3b52d5f27577bd4bd9457f7fed6cf1fa2fa07a47494"
       },
@@ -69,6 +72,7 @@
         "ordinal": 2,
         "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/異星母艦の光に舞う三人-1024x576.png",
         "alt": "",
+        "context": "「紗月！ ルナ！」 三人の身体が、ゆっくりと宙に浮かんでいく。 デスクの上の書類が舞い上がる。 ペンが回転し、タブレットが宙を漂う。",
         "path": "image_004.png",
         "sha256": "abfdc393b69210ed07c0aac7b3f2103551f9be985beaf96989958610f4bf9238"
       },
@@ -76,6 +80,7 @@
         "ordinal": 3,
         "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/宇宙船内の光輪と三人の少女-1024x576.png",
         "alt": "",
+        "context": "三人の姿が、オフィスから消えていた。 そして、巨大宇宙船の内部。 誰もいないように見える白い部屋で、三つの小さな光が順番に点灯した。 まだ、三人は知らない。",
         "path": "image_005.png",
         "sha256": "b6cdea7db12ec1c938ec76ff9172bda3fbd9c8f5bef58fcbf89f341bd983e52f"
       }

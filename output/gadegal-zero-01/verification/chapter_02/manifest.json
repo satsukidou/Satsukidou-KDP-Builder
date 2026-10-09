@@ -1,6 +1,6 @@
 {
   "url": "https://satsukidou.com/world/zero-02/",
-  "source_html_sha256": "cc8dcd38b7e4e2b62ffba0d22e6e7336860564ea294f9543609cc034f60181b5",
+  "source_html_sha256": "cae65eb7ef980855f555b3a71ddf5dc2765edf15405521e25ac95b80e0ce593f",
   "source_block_count": 160,
   "markdown_block_count": 160,
   "image_count": 3,
@@ -9,6 +9,7 @@
       "ordinal": 1,
       "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/月夜の研究室と巨大UFO-1024x768.png",
       "alt": "",
+      "context": "ルナはデスクに装置を置き、素早く操作を始めた。 画面に複雑なグラフが現れる。 「これ、さっきから観測してるんだけど……」 「何かわかった？」",
       "path": "image_003.png",
       "sha256": "f24868bb4c9c50ecec89f3b52d5f27577bd4bd9457f7fed6cf1fa2fa07a47494"
     },
@@ -16,6 +17,7 @@
       "ordinal": 2,
       "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/異星母艦の光に舞う三人-1024x576.png",
       "alt": "",
+      "context": "「紗月！ ルナ！」 三人の身体が、ゆっくりと宙に浮かんでいく。 デスクの上の書類が舞い上がる。 ペンが回転し、タブレットが宙を漂う。",
       "path": "image_004.png",
       "sha256": "abfdc393b69210ed07c0aac7b3f2103551f9be985beaf96989958610f4bf9238"
     },
@@ -23,6 +25,7 @@
       "ordinal": 3,
       "source_url": "https://satsukidou.com/wp-content/uploads/2026/10/宇宙船内の光輪と三人の少女-1024x576.png",
       "alt": "",
+      "context": "三人の姿が、オフィスから消えていた。 そして、巨大宇宙船の内部。 誰もいないように見える白い部屋で、三つの小さな光が順番に点灯した。 まだ、三人は知らない。",
       "path": "image_005.png",
       "sha256": "b6cdea7db12ec1c938ec76ff9172bda3fbd9c8f5bef58fcbf89f341bd983e52f"
     }
